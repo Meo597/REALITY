@@ -47,10 +47,10 @@ TODO List: TODO
                         "0123456789abcdef" // 0 到 f，长度为 2 的倍数，长度上限为 16
                     ],
                     // 下列四个 Limit 为选填，可对回落的 REALITY 连接限速，单位是字节/秒。默认为 0 即不启用
-                    "LimitUploadRate": 0, // 上行基准速率
-                    "LimitUploadBrust": 0, // 上行突发速率
-                    "LimitDownloadRate": 0, // 下行基准速率
-                    "LimitDownloadBrust": 0 // 下行突发速率
+                    "limitUploadRate": 0, // 上行基准速率
+                    "limitUploadBrust": 0, // 上行突发速率
+                    "limitDownloadRate": 0, // 下行基准速率
+                    "limitDownloadBrust": 0 // 下行突发速率
                 }
             }
         }

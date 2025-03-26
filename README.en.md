@@ -47,10 +47,10 @@ TODO List: TODO
                         "0123456789abcdef" // 0 to f, the length is a multiple of 2, the maximum length is 16
                     ],
                     // The following four Limits are optional and limit the rate of falling REALITY connections in bytes/second. Default is 0, i.e. not enabled
-                    "LimitUploadRate": 0, // Uplink base rate
-                    "LimitUploadBrust": 0, // Uplink burst rate
-                    "LimitDownloadRate": 0, // Downlink base rate
-                    "LimitDownloadBrust": 0 // Downlink burst rate
+                    "limitUploadRate": 0, // Uplink base rate
+                    "limitUploadBrust": 0, // Uplink burst rate
+                    "limitDownloadRate": 0, // Downlink base rate
+                    "limitDownloadBrust": 0 // Downlink burst rate
                 }
             }
         }
