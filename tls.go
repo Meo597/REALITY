@@ -95,9 +95,10 @@ type RatelimitedConn struct {
 func (c *RatelimitedConn) Read(b []byte) (int, error) {
 	n, err := c.Conn.Read(b)
 	if n != 0 {
-		c.LimitAfter -= int64(n)
 		if c.LimitAfter <= 0 {
 			c.Bucket.Wait(int64(n))
+		} else {
+			c.LimitAfter -= int64(n)
 		}
 	}
 	return n, err
