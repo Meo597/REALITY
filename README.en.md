@@ -46,11 +46,13 @@ TODO List: TODO
                         "", // If there is this item, the client shortId can be empty
                         "0123456789abcdef" // 0 to f, the length is a multiple of 2, the maximum length is 16
                     ],
-                    // The following four Limits are optional and limit the rate of falling REALITY connections in bytes/second. Default is 0, i.e. not enabled
+                    // The following six limits are optional and limit the rate of falling REALITY connections in bytes/second. Default is 0, i.e. not enabled
                     "limitUploadRate": 0, // Uplink base rate
                     "limitUploadBrust": 0, // Uplink burst rate
+                    "limitUploadAfter": 0, // Uplink after transport
                     "limitDownloadRate": 0, // Downlink base rate
-                    "limitDownloadBrust": 0 // Downlink burst rate
+                    "limitDownloadBrust": 0, // Downlink burst rate
+                    "limitDownloadAfter": 0 // Downlink after transport
                 }
             }
         }
