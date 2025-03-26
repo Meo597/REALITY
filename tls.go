@@ -242,7 +242,7 @@ func Server(ctx context.Context, conn net.Conn, config *Config) (*Conn, error) {
 				io.Copy(target, &RatelimitedConn{
 					Conn:       underlying,
 					Bucket:     ratelimit.NewBucketWithRate(config.LimitUploadRate, config.LimitUploadBrust),
-					LimitAfter: config.LimitUploadAfter,
+					LimitAfter: config.LimitUploadAfter - config.LimitUploadBrust,
 				})
 			}
 		}
@@ -368,7 +368,7 @@ func Server(ctx context.Context, conn net.Conn, config *Config) (*Conn, error) {
 						io.Copy(target, &RatelimitedConn{
 							Conn:       underlying,
 							Bucket:     ratelimit.NewBucketWithRate(config.LimitUploadRate, config.LimitUploadBrust),
-							LimitAfter: config.LimitUploadAfter,
+							LimitAfter: config.LimitUploadAfter - config.LimitUploadBrust,
 						})
 					}
 					waitGroup.Done()
@@ -382,7 +382,7 @@ func Server(ctx context.Context, conn net.Conn, config *Config) (*Conn, error) {
 				io.Copy(underlying, &RatelimitedConn{
 					Conn:       target,
 					Bucket:     ratelimit.NewBucketWithRate(config.LimitDownloadRate, config.LimitDownloadBrust),
-					LimitAfter: config.LimitDownloadAfter,
+					LimitAfter: config.LimitDownloadAfter - config.LimitDownloadBrust,
 				})
 			}
 			// Here is bidirectional direct forwarding:
