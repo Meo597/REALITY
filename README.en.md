@@ -46,13 +46,15 @@ TODO List: TODO
                         "", // If there is this item, the client shortId can be empty
                         "0123456789abcdef" // 0 to f, the length is a multiple of 2, the maximum length is 16
                     ],
-                    // The following six limits are optional and limit the rate of falling REALITY connections in bytes/second. Default is 0, i.e. not enabled
-                    "limitUploadRate": 0, // Uplink base rate
-                    "limitUploadBrust": 0, // Uplink burst rate
-                    "limitUploadAfter": 0, // Uplink after transport
-                    "limitDownloadRate": 0, // Downlink base rate
-                    "limitDownloadBrust": 0, // Downlink burst rate
-                    "limitDownloadAfter": 0 // Downlink after transport
+                    // The six limit below are optional for rate limiting falling REALITY connections. Default are 0 means disabled
+                    // WARNING: Enabling rate limiting may create detectable patterns for GFW!
+                    // If you're a GUI/panel/one-click script developer, RANDOMIZE these parameters!
+                    "limitUploadRate": 0, // Base upload speed (bytes/s)
+                    "limitUploadBrust": 0, // Upload burst capacity (bytes)
+                    "limitUploadAfter": 0, // Start upload throttling after (bytes)
+                    "limitDownloadRate": 0, // Base download speed (bytes/s)
+                    "limitDownloadBrust": 0, // Download burst capacity (bytes)
+                    "limitDownloadAfter": 0 // Start download throttling after (bytes)
                 }
             }
         }
