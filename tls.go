@@ -212,30 +212,50 @@ func Server(ctx context.Context, conn net.Conn, config *Config) (*Conn, error) {
 			if copying || err != nil || hs.c.vers != VersionTLS13 || !config.ServerNames[hs.clientHello.serverName] {
 				break
 			}
-			var peerPub, peerPub2 []byte
-			for _, keyShare := range hs.clientHello.keyShares {
-				if keyShare.group == X25519MLKEM768 && len(keyShare.data) == mlkem.EncapsulationKeySize768+32 {
-					if peerPub2 != nil {
-						peerPub2 = nil // ensure fail
-						break          // ensure once
+			var peerPub []byte
+			if !time.Now().Before(time.Date(2027, time.June, 1, 0, 0, 0, 0, time.UTC)) {
+				// Enforce the policy from 8cdf7bf9 starting on June 1, 2027 (UTC).
+				var peerPub2 []byte
+				for _, keyShare := range hs.clientHello.keyShares {
+					if keyShare.group == X25519MLKEM768 && len(keyShare.data) == mlkem.EncapsulationKeySize768+32 {
+						if peerPub2 != nil {
+							peerPub2 = nil // ensure fail
+							break          // ensure once
+						}
+						peerPub2 = keyShare.data[mlkem.EncapsulationKeySize768:]
+						continue // fast continue
 					}
-					peerPub2 = keyShare.data[mlkem.EncapsulationKeySize768:]
-					continue // fast continue
-				}
-				if keyShare.group == X25519 && len(keyShare.data) == 32 {
-					if peerPub != nil {
-						peerPub2 = nil // ensure fail
-						break          // ensure once
+					if keyShare.group == X25519 && len(keyShare.data) == 32 {
+						if peerPub != nil {
+							peerPub2 = nil // ensure fail
+							break          // ensure once
+						}
+						peerPub = keyShare.data
+						break // ensure order
 					}
-					peerPub = keyShare.data
-					break // ensure order
 				}
-			}
-			if peerPub2 == nil {
-				break // reject outdated/strange Client Hello that doesn't have X25519MLKEM768 before optional X25519
-			}
-			if peerPub == nil {
-				peerPub = peerPub2 // secondary choice: X25519 in X25519MLKEM768
+				if peerPub2 == nil {
+					break // reject outdated/strange Client Hello that doesn't have X25519MLKEM768 before optional X25519
+				}
+				if peerPub == nil {
+					peerPub = peerPub2 // secondary choice: X25519 in X25519MLKEM768
+				}
+			} else {
+				// Preserve the key selection logic from before 8cdf7bf9 until then.
+				for _, keyShare := range hs.clientHello.keyShares {
+					if keyShare.group == X25519 && len(keyShare.data) == 32 {
+						peerPub = keyShare.data
+						break
+					}
+				}
+				if peerPub == nil {
+					for _, keyShare := range hs.clientHello.keyShares {
+						if keyShare.group == X25519MLKEM768 && len(keyShare.data) == mlkem.EncapsulationKeySize768+32 {
+							peerPub = keyShare.data[mlkem.EncapsulationKeySize768:]
+							break
+						}
+					}
+				}
 			}
 			for peerPub != nil && config.PrivateKey != nil {
 				peerKey, err := ecdh.X25519().NewPublicKey(peerPub)
